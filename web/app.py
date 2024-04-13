@@ -1,11 +1,11 @@
 from flask import Flask, request, jsonify, send_file
-from flask_mysql import MySQL
+from flask_mysqldb import MySQL
 
 app = Flask(__name__)
 app.config['MYSQL_DATABASE_USER'] = 'rabin'
 app.config['MYSQL_DATABASE_PASSWORD'] = 'Rabin@123'
 app.config['MYSQL_DATABASE_DB'] = 'file_storage_db'
-app.config['MYSQL_DATABASE_HOST'] = 'localhost'
+app.config['MYSQL_DATABASE_HOST'] = 'drawer-mysql-db'
 
 mysql = MySQL(app)
 
@@ -49,4 +49,4 @@ def download_file(file_id):
     return send_file(f'uploads/{file_id}.dat', as_attachment=True, attachment_filename=file_name)
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(host='0.0.0.0', debug=True)

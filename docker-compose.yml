@@ -3,14 +3,33 @@ version: '3'
 services:
   flask-app:
     build: ./web
+    restart: always
     ports:
-      - "5000:5000"
-    depends_on:
-      - mysql-db
+      - "8085:5000"
     environment:
       - MYSQL_DATABASE_HOST=mysql-db
+    depends_on:
+      - mysql-db
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+    networks:
+      - server_net
 
   mysql-db:
     build: ./db
+    restart: always
     ports:
       - "3306:3306"
+    networks:
+      - server_net
+
+networks:
+  server_net:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: "10.0.1.0/24"

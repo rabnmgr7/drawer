@@ -1,5 +1,6 @@
 # Use the official Python image as base
-FROM python:3.9-slim
+ARG APP_VERSION=3.9-slim
+FROM python:${APP_VERSION}
 
 # Set environment variables
 ENV PYTHONDONTWRITEBYTECODE 1
@@ -11,7 +12,11 @@ WORKDIR /app
 # Install system dependencies
 RUN apt-get update \
     && apt-get install -y --no-install-recommends \
-        libmysqlclient-dev \
+        default-libmysqlclient-dev \
+	pkg-config \
+	gcc \
+	build-essential \
+	libmariadb-dev-compat \
     && rm -rf /var/lib/apt/lists/*
 
 # Install Python dependencies
