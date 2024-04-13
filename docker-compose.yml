@@ -17,6 +17,8 @@ services:
         max-file: "3"
     networks:
       - server_net
+    volumes:
+      - uploads:/app/uploads
 
   mysql-db:
     build: ./db
@@ -34,3 +36,6 @@ networks:
       driver: default
       config:
         - subnet: "10.0.1.0/24"
+
+volumes:
+  uploads:

@@ -39,8 +39,10 @@ def upload_file():
         file_id = cursor.lastrowid
 
         # Save the file to the uploads directory with the file_id as filename
-        file.save(f'uploads/{file_id}.dat')
-
+        file.save(os.path.join(app.config['UPLOAD_FOLDER'], file.filename))
+        # Insert file information into the 'files' table
+        # You'll need to modify this part to interact with your MySQL database
+        # Use the file information to insert into your MySQL database
         # Commit changes and close the connection
         connection.commit()
         connection.close()
