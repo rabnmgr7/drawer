@@ -8,6 +8,7 @@ app.config['MYSQL_DATABASE_PASSWORD'] = 'Rabin@123'
 app.config['MYSQL_DATABASE_DB'] = 'file_storage_db'
 app.config['MYSQL_DATABASE_HOST'] = '10.0.1.10'
 app.config['MYSQL_DATABASE_PORT'] = 3306
+app.config['MYSQL_DATABASE_DEFAULT_AUTH'] = 'mysql_native_password'  # Specify default authentication plugin
 
 # Initialize MySQL connection
 mysql = MySQL(app)
