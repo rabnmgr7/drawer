@@ -55,7 +55,7 @@ def download_file(file_id):
 # Route for handling root endpoint
 @app.route('/')
 def index():
-    return jsonify({'message': 'Welcome to the file storage app'}), 200
+    return render_template('index.html')
 
 # Route for serving favicon.ico
 @app.route('/favicon.ico')
