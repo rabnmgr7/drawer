@@ -13,12 +13,16 @@ WORKDIR /app
 RUN apt-get update \
     && apt-get install -y --no-install-recommends \
         default-libmysqlclient-dev \
+	pkg-config \
+	gcc \
+	build-essential \
+	libmariadb-dev-compat \
     && rm -rf /var/lib/apt/lists/*
 
 # Install Python dependencies
 COPY requirements.txt /app/
-RUN pip3 install --upgrade pip3 \
-    && pip3 install -r requirements.txt
+RUN pip install --upgrade pip \
+    && pip install -r requirements.txt
 
 # Copy the application code into the container
 COPY . /app/

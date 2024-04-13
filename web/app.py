@@ -1,5 +1,5 @@
 from flask import Flask, request, jsonify, send_file
-from flask_mysql import MySQL
+from flask_mysqldb import MySQL
 
 app = Flask(__name__)
 app.config['MYSQL_DATABASE_USER'] = 'rabin'

@@ -1,4 +1,4 @@
 Flask
-flask-mysql
+flask-mysqldb
 Werkzeug
 pymysql
