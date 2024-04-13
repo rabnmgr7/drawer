@@ -69,7 +69,9 @@ def get_files():
 
         return jsonify(files), 200
     except Exception as e:
-        return jsonify({'error': str(e)}), 500
+        # If there's an error fetching files (e.g., table doesn't exist or query fails), return an empty list
+        print(f"Error fetching files: {str(e)}")
+        return jsonify([]), 200  # Return an empty list instead of raising an error
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', debug=True)
