@@ -9,7 +9,7 @@ app.config['MYSQL_DATABASE_DB'] = 'file_storage_db'
 app.config['MYSQL_DATABASE_HOST'] = '10.0.1.10'
 app.config['MYSQL_DATABASE_PORT'] = 3306
 
-# Initialize MySQL connection with TCP/IP configuration
+# Initialize MySQL connection
 mysql = MySQL(app)
 
 # Route for handling file upload
@@ -22,37 +22,52 @@ def upload_file():
     if file.filename == '':
         return jsonify({'error': 'No selected file'}), 400
 
-    conn = mysql.connect
-    cursor = conn.cursor()
+    try:
+        conn = mysql.connect()
+        cursor = conn.cursor()
 
-    cursor.execute('INSERT INTO files (name) VALUES (%s)', (file.filename,))
-    file_id = cursor.lastrowid
+        cursor.execute('INSERT INTO files (name) VALUES (%s)', (file.filename,))
+        file_id = cursor.lastrowid
 
-    file.save(f'uploads/{file_id}.dat')
-    conn.commit()
-    conn.close()
-
-    return jsonify({'message': 'File uploaded successfully'}), 201
+        file.save(f'uploads/{file_id}.dat')
+        conn.commit()
+        return jsonify({'message': 'File uploaded successfully'}), 201
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+    finally:
+        if conn:
+            conn.close()
 
 # Route for getting list of files
 @app.route('/files')
 def get_files():
-    conn = mysql.connect()
-    cursor = conn.cursor()
-    cursor.execute('SELECT id, name FROM files')
-    files = [{'id': row[0], 'name': row[1]} for row in cursor.fetchall()]
-    conn.close()
-    return jsonify(files), 200
+    try:
+        conn = mysql.connect()
+        cursor = conn.cursor()
+        cursor.execute('SELECT id, name FROM files')
+        files = [{'id': row[0], 'name': row[1]} for row in cursor.fetchall()]
+        return jsonify(files), 200
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+    finally:
+        if conn:
+            conn.close()
 
 # Route for downloading a file by ID
 @app.route('/download/<int:file_id>')
 def download_file(file_id):
-    conn = mysql.connect()
-    cursor = conn.cursor()
-    cursor.execute('SELECT name FROM files WHERE id = %s', (file_id,))
-    file_name = cursor.fetchone()[0]
-    conn.close()
-    return send_file(f'uploads/{file_id}.dat', as_attachment=True, attachment_filename=file_name)
+    try:
+        conn = mysql.connect()
+        cursor = conn.cursor()
+        cursor.execute('SELECT name FROM files WHERE id = %s', (file_id,))
+        file_name = cursor.fetchone()[0]
+        conn.close()
+        return send_file(f'uploads/{file_id}.dat', as_attachment=True, attachment_filename=file_name)
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+    finally:
+        if conn:
+            conn.close()
 
 # Route for handling root endpoint
 @app.route('/')
@@ -62,8 +77,7 @@ def index():
 # Route for serving favicon.ico
 @app.route('/favicon.ico')
 def favicon():
-    return send_from_directory(os.path.join(app.root_path, 'static'),
-                               'favicon.ico', mimetype='image/vnd.microsoft.icon')
+    return send_from_directory(os.path.join(app.root_path, 'static'), 'favicon.ico', mimetype='image/vnd.microsoft.icon')
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', debug=True)
