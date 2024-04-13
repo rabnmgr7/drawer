@@ -1,5 +1,6 @@
 # Use the official Python image as base
-FROM python:3.9-slim
+ARG APP_VERSION=3.9-slim
+FROM python:${APP_VERSION}
 
 # Set environment variables
 ENV PYTHONDONTWRITEBYTECODE 1
@@ -16,8 +17,8 @@ RUN apt-get update \
 
 # Install Python dependencies
 COPY requirements.txt /app/
-RUN pip install --upgrade pip \
-    && pip install -r requirements.txt
+RUN pip3 install --upgrade pip3 \
+    && pip3 install -r requirements.txt
 
 # Copy the application code into the container
 COPY . /app/
