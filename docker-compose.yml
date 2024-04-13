@@ -15,9 +15,21 @@ services:
       options:
         max-size: "10m"
         max-file: "3"
+    networks:
+      - server_net
 
   mysql-db:
     build: ./db
     restart: always
     ports:
       - "3306:3306"
+    networks:
+      - server_net
+
+networks:
+  server_net:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: "10.0.1.0/24"
