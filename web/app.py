@@ -49,4 +49,4 @@ def download_file(file_id):
     return send_file(f'uploads/{file_id}.dat', as_attachment=True, attachment_filename=file_name)
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(host='0.0.0.0', debug=True)
