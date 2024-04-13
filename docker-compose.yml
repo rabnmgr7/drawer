@@ -1,0 +1,16 @@
+version: '3'
+
+services:
+  flask-app:
+    build: ./web
+    ports:
+      - "5000:5000"
+    depends_on:
+      - mysql-db
+    environment:
+      - MYSQL_DATABASE_HOST=mysql-db
+
+  mysql-db:
+    build: ./db
+    ports:
+      - "3306:3306"
