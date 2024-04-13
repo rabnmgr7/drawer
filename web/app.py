@@ -9,11 +9,8 @@ app.config['MYSQL_DATABASE_DB'] = 'file_storage_db'
 app.config['MYSQL_DATABASE_HOST'] = '10.0.1.10'
 app.config['MYSQL_DATABASE_PORT'] = 3306
 
-mysql = MySQL(app, connection_options={
-    'unix socket': None, #Disable Unix socket
-    'host': app.config['MYSQL_DATABASE_HOST'],
-    'port': app.config['MYSQL_DATABASE_PORT'],
-})
+# Initialize MySQL connection with TCP/IP configuration
+mysql = MySQL(app)
 
 # Route for handling file upload
 @app.route('/upload', methods=['POST'])
@@ -25,7 +22,7 @@ def upload_file():
     if file.filename == '':
         return jsonify({'error': 'No selected file'}), 400
 
-    conn = mysql.connect()
+    conn = mysql.connect
     cursor = conn.cursor()
 
     cursor.execute('INSERT INTO files (name) VALUES (%s)', (file.filename,))
