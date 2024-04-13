@@ -6,9 +6,9 @@ app = Flask(__name__)
 app.config['MYSQL_DATABASE_USER'] = 'rabin'
 app.config['MYSQL_DATABASE_PASSWORD'] = 'Rabin@123'
 app.config['MYSQL_DATABASE_DB'] = 'file_storage_db'
-app.config['MYSQL_DATABASE_HOST'] = '10.0.1.10'
-app.config['MYSQL_DATABASE_PORT'] = 3306
-app.config['MYSQL_DATABASE_DEFAULT_AUTH'] = 'mysql_native_password'  # Specify default authentication plugin
+app.config['MYSQL_DATABASE_HOST'] = '10.0.1.10'  # Update to MySQL server IP or hostname
+app.config['MYSQL_DATABASE_PORT'] = 3306  # Update to MySQL server port
+app.config['MYSQL_DATABASE_DEFAULT_AUTH'] = 'mysql_native_password'
 
 # Initialize MySQL connection
 mysql = MySQL(app)
@@ -54,8 +54,6 @@ def get_files():
         return jsonify(files), 200
     except Exception as e:
         return jsonify({'error': str(e)}), 500
-
-# Other routes and configurations...
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', debug=True)
