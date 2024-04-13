@@ -1,5 +1,5 @@
 import os
-from flask import Flask, request, jsonify, send_file, send_from_directory
+from flask import Flask, request, jsonify, send_file, send_from_directory, render_template
 from flask_mysqldb import MySQL
 
 app = Flask(__name__)
