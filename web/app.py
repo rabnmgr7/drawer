@@ -12,6 +12,10 @@ app.config['MYSQL_DATABASE_PORT'] = 3306
 # Initialize MySQL connection
 mysql = MySQL(app)
 
+@app.route('/')
+def index():
+    return render_template('index.html')
+
 # Route for handling file upload
 @app.route('/upload', methods=['POST'])
 def upload_file():
