@@ -1,18 +1,20 @@
 import os
-from flask import Flask, request, jsonify, send_file, send_from_directory, render_template
-from flask_mysqldb import MySQL
+from flask import Flask, request, jsonify, render_template
+import mysql.connector
 
 app = Flask(__name__)
-app.config['MYSQL_DATABASE_USER'] = 'rabin'
-app.config['MYSQL_DATABASE_PASSWORD'] = 'Rabin@123'
-app.config['MYSQL_DATABASE_DB'] = 'file_storage_db'
-app.config['MYSQL_DATABASE_HOST'] = '127.0.0.1'  # Update to MySQL server IP or hostname
-app.config['MYSQL_DATABASE_PORT'] = 3306  # Update to MySQL server port
-app.config['MYSQL_DATABASE_DEFAULT_AUTH'] = 'mysql_native_password'
 
-# Initialize MySQL connection
-mysql = MySQL(app)
+# MySQL database configuration
+db_config = {
+    'user': 'rabin',
+    'password': 'Rabin@123',
+    'host': '10.0.1.10',  # Update to MySQL server IP or hostname
+    'database': 'file_storage_db',
+    'port': 3306,  # Update to MySQL server port
+    'auth_plugin': 'mysql_native_password'  # Use the default authentication plugin
+}
 
+# Route for rendering index.html template
 @app.route('/')
 def index():
     return render_template('index.html')
@@ -28,15 +30,20 @@ def upload_file():
         return jsonify({'error': 'No selected file'}), 400
 
     try:
-        conn = mysql.connect()
-        cursor = conn.cursor()
+        # Establish a connection to the MySQL database
+        connection = mysql.connector.connect(**db_config)
+        cursor = connection.cursor()
 
+        # Insert file information into the 'files' table
         cursor.execute('INSERT INTO files (name) VALUES (%s)', (file.filename,))
         file_id = cursor.lastrowid
 
+        # Save the file to the uploads directory with the file_id as filename
         file.save(f'uploads/{file_id}.dat')
-        conn.commit()
-        conn.close()
+
+        # Commit changes and close the connection
+        connection.commit()
+        connection.close()
 
         return jsonify({'message': 'File uploaded successfully'}), 201
     except Exception as e:
@@ -46,11 +53,17 @@ def upload_file():
 @app.route('/files')
 def get_files():
     try:
-        conn = mysql.connect()
-        cursor = conn.cursor()
+        # Establish a connection to the MySQL database
+        connection = mysql.connector.connect(**db_config)
+        cursor = connection.cursor()
+
+        # Retrieve file information from the 'files' table
         cursor.execute('SELECT id, name FROM files')
         files = [{'id': row[0], 'name': row[1]} for row in cursor.fetchall()]
-        conn.close()
+
+        # Close the connection
+        connection.close()
+
         return jsonify(files), 200
     except Exception as e:
         return jsonify({'error': str(e)}), 500

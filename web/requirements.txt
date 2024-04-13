@@ -2,3 +2,4 @@ Flask
 flask-mysqldb
 Werkzeug
 pymysql
+mysql-connector-python
