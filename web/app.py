@@ -7,8 +7,13 @@ app.config['MYSQL_DATABASE_USER'] = 'rabin'
 app.config['MYSQL_DATABASE_PASSWORD'] = 'Rabin@123'
 app.config['MYSQL_DATABASE_DB'] = 'file_storage_db'
 app.config['MYSQL_DATABASE_HOST'] = '10.0.1.10'
+app.config['MYSQL_DATABASE_PORT'] = 3306
 
-mysql = MySQL(app)
+mysql = MySQL(app, connection_options={
+    'unix socket': None, #Disable Unix socket
+    'host': app.config['MYSQL_DATABASE_HOST'],
+    'port': app.config['MYSQL_DATABASE_PORT'],
+})
 
 # Route for handling file upload
 @app.route('/upload', methods=['POST'])
