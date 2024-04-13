@@ -15,6 +15,7 @@ mysql = MySQL(app)
 # Route for handling file upload
 @app.route('/upload', methods=['POST'])
 def upload_file():
+    conn = None
     if 'file' not in request.files:
         return jsonify({'error': 'No file part'}), 400
 
@@ -41,6 +42,7 @@ def upload_file():
 # Route for getting list of files
 @app.route('/files')
 def get_files():
+    conn = None #Initialize conn outside the try block
     try:
         conn = mysql.connect()
         cursor = conn.cursor()
@@ -56,6 +58,7 @@ def get_files():
 # Route for downloading a file by ID
 @app.route('/download/<int:file_id>')
 def download_file(file_id):
+    conn=None
     try:
         conn = mysql.connect()
         cursor = conn.cursor()
