@@ -7,7 +7,7 @@ services:
     ports:
       - "8085:5000"
     environment:
-      - MYSQL_DATABASE_HOST=mysql-db
+      - MYSQL_DATABASE_HOST=10.0.1.10
     depends_on:
       - mysql-db
     logging:
@@ -24,7 +24,8 @@ services:
     ports:
       - "3306:3306"
     networks:
-      - server_net
+      server_net:
+        ipv4_address: 10.0.1.10
 
 networks:
   server_net:
