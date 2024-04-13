@@ -39,8 +39,11 @@ def upload_file():
         file_id = cursor.lastrowid
 
         # Save the file to the uploads directory with the file_id as filename
-        file.save(f'uploads/{file_id}.dat')
-
+        file_path = os.path.join('/app/uploads', str(file_id))
+        file.save(file_path)
+        # Insert file information into the 'files' table
+        # You'll need to modify this part to interact with your MySQL database
+        # Use the file information to insert into your MySQL database
         # Commit changes and close the connection
         connection.commit()
         connection.close()
@@ -66,7 +69,9 @@ def get_files():
 
         return jsonify(files), 200
     except Exception as e:
-        return jsonify({'error': str(e)}), 500
+        # If there's an error fetching files (e.g., table doesn't exist or query fails), return an empty list
+        print(f"Error fetching files: {str(e)}")
+        return jsonify([]), 200  # Return an empty list instead of raising an error
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', debug=True)

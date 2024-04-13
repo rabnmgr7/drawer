@@ -2,24 +2,66 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>File Upload and Download</title>
+    <title>DRAWER</title>
 </head>
 <body>
-    <h2>File Upload and Download</h2>
+    <h2>Keep your File and Lock the Drawer.</h2>
     
     <!-- File Upload Form -->
     <form id="uploadForm" enctype="multipart/form-data">
         <input type="file" name="fileInput" id="fileInput">
-        <button type="button" onclick="uploadFile()">Upload File</button>
+        <button type="button" onclick="uploadFile()">Upload</button>
     </form>
 
     <hr>
 
     <!-- List of Uploaded Files -->
-    <h3>Uploaded Files</h3>
+    <h3>Uploads:</h3>
     <ul id="fileList"></ul>
 
     <!-- JavaScript for File Upload -->
-    <script src="script.js"></script>
+    <script>
+        function uploadFile() {
+            var formData = new FormData();
+            var fileInput = document.getElementById('fileInput').files[0];
+            formData.append('file', fileInput);
+
+            fetch('/upload', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                alert(data.message);
+                fetchFilesList(); // Refresh file list after upload
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('File upload failed.');
+            });
+        }
+
+        function fetchFilesList() {
+            fetch('/files')
+            .then(response => response.json())
+            .then(files => {
+                var fileList = document.getElementById('fileList');
+                fileList.innerHTML = ''; // Clear previous list
+
+                files.forEach(file => {
+                    var li = document.createElement('li');
+                    li.textContent = file.name;
+                    fileList.appendChild(li);
+                });
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Failed to fetch file list.');
+            });
+        }
+
+        // Initial fetch of file list when page loads
+        fetchFilesList();
+    </script>
 </body>
 </html>
