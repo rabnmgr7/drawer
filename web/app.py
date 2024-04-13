@@ -1,4 +1,5 @@
-from flask import Flask, request, jsonify, send_file
+import os
+from flask import Flask, request, jsonify, send_file, send_from_directory
 from flask_mysqldb import MySQL
 
 app = Flask(__name__)
@@ -9,15 +10,16 @@ app.config['MYSQL_DATABASE_HOST'] = 'drawer-mysql-db'
 
 mysql = MySQL(app)
 
+# Route for handling file upload
 @app.route('/upload', methods=['POST'])
 def upload_file():
     if 'file' not in request.files:
         return jsonify({'error': 'No file part'}), 400
-    
+
     file = request.files['file']
     if file.filename == '':
         return jsonify({'error': 'No selected file'}), 400
-    
+
     conn = mysql.connect()
     cursor = conn.cursor()
 
@@ -30,6 +32,7 @@ def upload_file():
 
     return jsonify({'message': 'File uploaded successfully'}), 201
 
+# Route for getting list of files
 @app.route('/files')
 def get_files():
     conn = mysql.connect()
@@ -39,6 +42,7 @@ def get_files():
     conn.close()
     return jsonify(files), 200
 
+# Route for downloading a file by ID
 @app.route('/download/<int:file_id>')
 def download_file(file_id):
     conn = mysql.connect()
@@ -47,6 +51,17 @@ def download_file(file_id):
     file_name = cursor.fetchone()[0]
     conn.close()
     return send_file(f'uploads/{file_id}.dat', as_attachment=True, attachment_filename=file_name)
+
+# Route for handling root endpoint
+@app.route('/')
+def index():
+    return jsonify({'message': 'Welcome to the file storage app'}), 200
+
+# Route for serving favicon.ico
+@app.route('/favicon.ico')
+def favicon():
+    return send_from_directory(os.path.join(app.root_path, 'static'),
+                               'favicon.ico', mimetype='image/vnd.microsoft.icon')
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', debug=True)
