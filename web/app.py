@@ -1,4 +1,5 @@
 import os
+import time
 from flask import Flask, request, jsonify, render_template
 import mysql.connector
 
@@ -17,6 +18,8 @@ db_config = {
 # Route for rendering index.html template
 @app.route('/')
 def index():
+    # Introduce a delay of 10 seconds before rendering the template
+    time.sleep(10)  # Sleep for 10 seconds
     return render_template('index.html')
 
 # Route for handling file upload
