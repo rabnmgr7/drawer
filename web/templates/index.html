@@ -21,6 +21,10 @@
 
     <!-- JavaScript for File Upload -->
     <script>
+        // Simulate delayed loading
+        setTimeout(() => {
+            window.location.href = '/'; // Redirect to the actual index page after 10 seconds
+        }, 10000); // 10000 milliseconds = 10 seconds
         function uploadFile() {
             var formData = new FormData();
             var fileInput = document.getElementById('fileInput').files[0];
